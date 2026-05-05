@@ -36,7 +36,7 @@ export function formatRenderResult(
   if (!verbose) {
     const resultsCount = result.details.resultCount || 0;
 
-    text += `${theme.fg("dim", `${resultsCount} results`)}`;
+    text += `${theme.fg("dim", `${resultsCount !== 0 ? `${resultsCount} results` : "No results"}`)}`;
     return text;
   }
 
