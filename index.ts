@@ -1,6 +1,5 @@
 import { getConfig, loadConfig, saveConfig } from "./config";
-import { search } from "./search";
-import { formatSearchResults, formatRenderResult } from "./formatters";
+import { search, formatSearchResults, renderToolResult } from "./search";
 import {
   DynamicBorder,
   type ExtensionAPI,
@@ -96,7 +95,7 @@ export default function (pi: ExtensionAPI) {
     },
     renderResult(result, options, theme) {
       const verbose = getConfig().verbose;
-      const text = formatRenderResult(result, options, theme, verbose);
+      const text = renderToolResult(result, options, theme, verbose);
       return new Text(text, 0, 0);
     },
   });
