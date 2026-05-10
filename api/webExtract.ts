@@ -1,5 +1,6 @@
 import { parseHTML } from "linkedom";
 import TurndownService from "turndown";
+import { createTimeoutSignal } from "../helpers/abort";
 
 const turndown = new TurndownService({
   headingStyle: "atx",
@@ -127,17 +128,10 @@ export async function webExtract(
     throw new Error(`Invalid URL: ${url}`);
   }
 
-  const timeoutController = new AbortController();
-  const timer = setTimeout(() => {
-    timeoutController.abort();
-  }, options.timeoutMs);
-
-  const signal = options.signal
-    ? AbortSignal.any([timeoutController.signal, options.signal])
-    : timeoutController.signal;
+  const timeout = createTimeoutSignal(options.timeoutMs, options.signal);
 
   try {
-    const res = await fetch(validatedUrl, { signal, headers });
+    const res = await fetch(validatedUrl, { signal: timeout.signal, headers });
 
     if (!res.ok) {
       throw new Error(`Fetch returned ${res.status} ${res.statusText}`);
@@ -161,6 +155,6 @@ export async function webExtract(
       content: `${metaString}\n\n---\n\n${markdown}`,
     };
   } finally {
-    clearTimeout(timer);
+    timeout.cleanup();
   }
 }

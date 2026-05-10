@@ -1,5 +1,6 @@
 import { Type, type Static } from "typebox";
 import { Compile } from "typebox/compile";
+import { createTimeoutSignal } from "../helpers/abort";
 
 export interface SearchOptions {
   limit: number;
@@ -76,16 +77,11 @@ export async function webSearch(
     headers.Authorization = `Bearer ${apiKey}`;
   }
 
-  const timeoutController = new AbortController();
-  const timer = setTimeout(() => timeoutController.abort(), options.timeoutMs);
-
-  const signal = options.signal
-    ? AbortSignal.any([options.signal, timeoutController.signal])
-    : timeoutController.signal;
+  const timeout = createTimeoutSignal(options.timeoutMs, options.signal);
 
   try {
     const res = await fetch(url.toString(), {
-      signal,
+      signal: timeout.signal,
       headers,
     });
 
@@ -99,7 +95,7 @@ export async function webSearch(
 
     return { results };
   } finally {
-    clearTimeout(timer);
+    timeout.cleanup();
   }
 }
 
