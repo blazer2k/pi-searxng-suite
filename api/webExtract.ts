@@ -42,9 +42,10 @@ function isPrivateHostname(hostname: string): boolean {
 
   return (
     host === "localhost" ||
-    host === "127.0.0.1" ||
+    host === "0.0.0.0" ||
     host === "::1" ||
     host.startsWith("10.") ||
+    host.startsWith("127.") ||
     host.startsWith("192.168.") ||
     /^172\.(1[6-9]|2\d|3[0-1])\./.test(host) ||
     host.startsWith("169.254.")
@@ -108,9 +109,14 @@ function absolutizeUrls(body: Element, baseUrl: string) {
   body.querySelectorAll("a[href], img[src]").forEach((el) => {
     for (const attr of ["href", "src"] as const) {
       const value = el.getAttribute(attr);
-      if (value && !value.startsWith("http") && !value.startsWith("data:")) {
+
+      if (!value || value.startsWith("data:")) {
+        continue;
+      }
+
+      try {
         el.setAttribute(attr, new URL(value, baseUrl).toString());
-      } else {
+      } catch {
         el.removeAttribute(attr);
       }
     }
