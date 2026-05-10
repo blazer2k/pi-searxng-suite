@@ -85,19 +85,19 @@ function parseConfigValue(id: ConfigKey, value: string): Config[ConfigKey] {
   }
 }
 
-export function saveConfig(id: ConfigKey, value: string): void {
-  try {
-    let parsed = parseConfigValue(id, value);
+export function saveConfig(id: ConfigKey, value: string): Config {
+  let parsed = parseConfigValue(id, value);
 
-    const updated = { ...config, [id]: parsed };
-    if (!configValidator.Check(updated)) {
-      throw new Error(`Invalid config update: ${id}=${value}`);
-    }
-    config = updated as Config;
-    writeFileSync(configPath, JSON.stringify(updated, null, 2));
-  } catch (err) {
-    console.error("Failed to save config:", err);
+  const updated = { ...config, [id]: parsed };
+  if (!configValidator.Check(updated)) {
+    throw new Error(`Invalid config update: ${id}=${value}`);
   }
+
+  mkdirSync(dirname(configPath), { recursive: true });
+  writeFileSync(configPath, JSON.stringify(updated, null, 2));
+  config = updated as Config;
+
+  return config;
 }
 
 export function getConfig(): Config {

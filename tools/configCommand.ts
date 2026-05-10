@@ -10,6 +10,7 @@ import {
   Text,
 } from "@mariozechner/pi-tui";
 import { type ConfigKey, getConfig, saveConfig } from "../helpers/config";
+import { errorMessage } from "../helpers/utils";
 
 export function registerConfigCommand(pi: ExtensionAPI) {
   pi.registerCommand("search-config", {
@@ -69,7 +70,11 @@ export function registerConfigCommand(pi: ExtensionAPI) {
           5,
           getSettingsListTheme(),
           (id, newValue) => {
-            saveConfig(id as ConfigKey, newValue);
+            try {
+              saveConfig(id as ConfigKey, newValue);
+            } catch (err) {
+              ctx.ui.notify(theme.fg("error", errorMessage(err)));
+            }
           },
           () => done(undefined),
           { enableSearch: true },
