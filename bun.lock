@@ -5,17 +5,20 @@
     "": {
       "name": "pi-searxng-suite",
       "dependencies": {
-        "@mariozechner/pi-coding-agent": "^0.72.1",
-        "@mariozechner/pi-tui": "^0.72.1",
         "linkedom": "^0.18.12",
         "turndown": "^7.2.4",
-        "typebox": "^1.1.37",
       },
       "devDependencies": {
+        "@mariozechner/pi-coding-agent": "^0.72.1",
+        "@mariozechner/pi-tui": "^0.72.1",
         "@types/bun": "latest",
+        "typebox": "^1.1.37",
+        "typescript": "^5",
       },
       "peerDependencies": {
-        "typescript": "^5",
+        "@mariozechner/pi-coding-agent": "^0.72.1",
+        "@mariozechner/pi-tui": "^0.72.1",
+        "typebox": "^1.1.37",
       },
     },
   },

@@ -1,19 +1,36 @@
 {
   "name": "pi-searxng-suite",
-  "module": "index.ts",
+  "description": "SearxNG-powered web search and extraction tools for pi.",
   "type": "module",
+  "module": "index.ts",
+  "license": "MIT",
+  "keywords": [
+    "pi",
+    "pi-package",
+    "searxng",
+    "web-search",
+    "web-fetch"
+  ],
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  },
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
+  "dependencies": {
+    "linkedom": "^0.18.12",
+    "turndown": "^7.2.4"
   },
   "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
     "@mariozechner/pi-coding-agent": "^0.72.1",
     "@mariozechner/pi-tui": "^0.72.1",
-    "linkedom": "^0.18.12",
-    "turndown": "^7.2.4",
+    "typebox": "^1.1.37"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5",
+    "@mariozechner/pi-coding-agent": "^0.72.1",
+    "@mariozechner/pi-tui": "^0.72.1",
     "typebox": "^1.1.37"
   }
 }
