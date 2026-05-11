@@ -48,6 +48,10 @@ export function registerSearchTool(pi: ExtensionAPI) {
       try {
         const query = params.query.trim();
 
+        if (!query) {
+          throw new Error("Search query cannot be empty");
+        }
+
         const searchResponse = await webSearch(query, {
           limit: config.limit,
           timeoutMs: config.timeoutMs,
