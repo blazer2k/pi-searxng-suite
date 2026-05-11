@@ -10,16 +10,17 @@ import { errorMessage, isAbortError, isTimeoutError } from "../helpers/error";
 import {
   type ToolStatus,
   getToolFailureStatus,
-  getApproxTokens,
-  renderTextResult,
+  buildToolCallText,
+  buildToolResultText,
+  buildExtractContentSummary,
 } from "../ui/tool-rendering";
-import type { ExtractKind } from "../helpers/request";
 import { getExtractTextLength } from "../extractors/shared";
 
-interface ExtractToolDetails {
+export interface ExtractToolDetails {
   url: string;
   status: ToolStatus;
   contentType?: string;
+  byteLength?: number;
   error?: string;
 }
 
@@ -65,6 +66,7 @@ export function registerExtractTool(pi: ExtensionAPI) {
             url: result.sourceUrl,
             status: "success",
             contentType: result.contentType,
+            byteLength: result.byteLength,
           },
         };
       } catch (err) {
@@ -107,14 +109,8 @@ export function registerExtractTool(pi: ExtensionAPI) {
       }
     },
     renderCall(args, theme, context_) {
-      const url = args.url;
-      return new Text(
-        theme.fg("toolTitle", "extract") +
-          " " +
-          theme.fg("accent", `${url || ""}`),
-        0,
-        0,
-      );
+      const text = buildToolCallText("extract", args.url, theme);
+      return new Text(text, 0, 0);
     },
     renderResult(result, options, theme) {
       const details = result.details as ExtractToolDetails;
@@ -128,21 +124,11 @@ export function registerExtractTool(pi: ExtensionAPI) {
       const verbose = getConfig().verbose;
 
       if (!verbose) {
-        const charCount = getExtractTextLength(result.content) ?? 0;
-
-        return new Text(
-          theme.fg(
-            "dim",
-            charCount !== 0
-              ? `${charCount} chars (~${getApproxTokens(charCount)} tokens)`
-              : "Empty",
-          ),
-          0,
-          0,
-        );
+        const text = buildExtractContentSummary(result, theme);
+        return new Text(text, 0, 0);
       }
 
-      const text = renderTextResult(result, options, theme);
+      const text = buildToolResultText(result, options, theme);
       return new Text(text, 0, 0);
     },
   });

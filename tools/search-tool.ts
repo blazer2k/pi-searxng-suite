@@ -10,10 +10,12 @@ import { errorMessage, isAbortError, isTimeoutError } from "../helpers/error";
 import {
   type ToolStatus,
   getToolFailureStatus,
-  renderTextResult,
+  buildToolCallText,
+  buildToolResultText,
+  buildSearchResultsSummary,
 } from "../ui/tool-rendering";
 
-interface SearchToolDetails {
+export interface SearchToolDetails {
   query: string;
   status: ToolStatus;
   resultCount?: number;
@@ -104,17 +106,11 @@ export function registerSearchTool(pi: ExtensionAPI) {
       }
     },
     renderCall(args, theme, context_) {
-      const query = args.query;
-      return new Text(
-        theme.fg("toolTitle", "search") +
-          " " +
-          theme.fg("accent", `${query || ""}`),
-        0,
-        0,
-      );
+      const text = buildToolCallText("search", args.query, theme);
+      return new Text(text, 0, 0);
     },
     renderResult(result, options, theme) {
-      const details = result.details;
+      const details = result.details as SearchToolDetails;
 
       const failureStatus = getToolFailureStatus(details, theme);
 
@@ -124,18 +120,11 @@ export function registerSearchTool(pi: ExtensionAPI) {
 
       const verbose = getConfig().verbose;
       if (!verbose) {
-        const resultCount = result.details.resultCount ?? 0;
-        return new Text(
-          theme.fg(
-            "dim",
-            resultCount !== 0 ? `${resultCount} results` : "No results",
-          ),
-          0,
-          0,
-        );
+        const summary = buildSearchResultsSummary(result, theme);
+        return new Text(summary, 0, 0);
       }
 
-      const text = renderTextResult(result, options, theme);
+      const text = buildToolResultText(result, options, theme);
       return new Text(text, 0, 0);
     },
   });
