@@ -7,6 +7,7 @@ import { getValidUrl, absolutizeUrls } from "../helpers/url";
 import { type ExtractResponse } from "../extractors/shared";
 import { extractPlainText } from "../extractors/text";
 import { extractHtml } from "../extractors/html";
+import { extractImage } from "../extractors/image";
 
 export interface ExtractOptions {
   timeoutMs: number;
@@ -56,6 +57,9 @@ export async function webExtract(
 
       case "text":
         return extractPlainText(validatedUrl, contentType, res);
+
+      case "image":
+        return extractImage(validatedUrl, contentType, res);
 
       default:
         throw new Error(

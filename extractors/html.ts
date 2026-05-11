@@ -112,7 +112,7 @@ export async function extractHtml(
     contentType,
     content: [
       {
-        type: "text",
+        type: "text" as const,
         text: truncateContent(content, MAX_MARKDOWN_CHARS, "verbose"),
       },
     ],

@@ -1,8 +1,11 @@
 export const MAX_TEXT_CHARS = 500_000;
 export const MAX_HTML_CHARS = 1_000_000;
 export const MAX_MARKDOWN_CHARS = 100_000;
+export const MAX_IMAGE_BYTES = 50 * 1024 * 1024;
 
-export type ExtractContent = { type: "text"; text: string };
+export type ExtractContent =
+  | { type: "text"; text: string }
+  | { type: "image"; data: string; mimeType: string };
 
 export interface ExtractResponse {
   sourceUrl: string;
