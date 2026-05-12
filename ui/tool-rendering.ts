@@ -59,6 +59,7 @@ export function buildToolTextOutput(
   options: ToolRenderResultOptions,
   theme: Theme,
   maxCollapsedLines = 20,
+  maxCollapsedChars = 1500,
 ): string {
   const output = result.content
     .filter((c) => c.type === "text")
@@ -67,6 +68,21 @@ export function buildToolTextOutput(
 
   if (!output) return "";
 
+  if (!options.expanded && output.length > maxCollapsedChars) {
+    const collapsed = output.slice(0, maxCollapsedChars);
+    const hiddenChars = output.length - maxCollapsedChars;
+
+    return (
+      `\n${collapsed
+        .split("\n")
+        .map((line) => theme.fg("toolOutput", line))
+        .join("\n")}` +
+      `${theme.fg("muted", `\n... (${hiddenChars} more chars,`)} ${keyHint(
+        "app.tools.expand",
+        "to expand",
+      )})`
+    );
+  }
   const lines = output.split("\n");
   const maxLines = options.expanded ? lines.length : maxCollapsedLines;
   const displayLines = lines.slice(0, maxLines);
