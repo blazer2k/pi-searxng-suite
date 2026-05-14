@@ -1,6 +1,6 @@
 {
   "name": "pi-searxng-suite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SearxNG-powered web search and extraction tools for pi.",
   "type": "module",
   "module": "index.ts",
@@ -38,6 +38,7 @@
   "pi": {
     "extensions": [
       "./index.ts"
-    ]
+    ],
+    "image": "https://raw.githubusercontent.com/blazer2k/pi-searxng-suite/main/images/bg.jpg"
   }
 }
