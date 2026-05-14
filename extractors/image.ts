@@ -1,5 +1,4 @@
-import { MAX_IMAGE_BYTES, type ExtractResponse } from "./shared";
-import { formatBytes } from "./shared";
+import { MAX_IMAGE_BYTES, type ExtractResponse, formatBytes } from "./shared";
 
 const SUPPORTED_IMAGE_TYPES = new Set([
   "image/jpeg",

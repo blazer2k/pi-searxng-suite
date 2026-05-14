@@ -109,7 +109,7 @@ function parseConfigValue(id: ConfigKey, value: string): Config[ConfigKey] {
   }
 }
 
-export function saveConfig(id: ConfigKey, value: string): Config {
+export function saveConfig(id: ConfigKey, value: string): void {
   const parsed = parseConfigValue(id, value);
 
   const updated = { ...config, [id]: parsed };
@@ -120,8 +120,6 @@ export function saveConfig(id: ConfigKey, value: string): Config {
   mkdirSync(dirname(configPath), { recursive: true });
   writeFileSync(configPath, JSON.stringify(updated, null, 2));
   config = updated as Config;
-
-  return { ...config };
 }
 
 export function getConfig(): Config {

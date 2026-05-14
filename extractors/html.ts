@@ -18,8 +18,8 @@ const turndown = new TurndownService({
 });
 
 export function denoiseBody(body: Element) {
-  body
-    .querySelectorAll(
+  [
+    ...body.querySelectorAll(
       `
     nav, header, footer,
     [role="navigation"], [role="banner"], [role="contentinfo"],
@@ -32,8 +32,8 @@ export function denoiseBody(body: Element) {
     .newsletter, .subscribe,
     script, style, noscript, svg, iframe, link, meta
   `,
-    )
-    .forEach((el) => el.remove());
+    ),
+  ].forEach((el) => el.remove());
 }
 
 export function buildMetaString(document: Document): string {
