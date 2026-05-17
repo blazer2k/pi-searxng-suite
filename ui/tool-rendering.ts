@@ -44,10 +44,14 @@ export function buildToolCallText(
   toolName: string,
   query: string,
   theme: Theme,
+  searchCategory?: string,
 ): string {
-  return (
-    theme.fg("toolTitle", toolName) + " " + theme.fg("accent", `${query || ""}`)
-  );
+  const category =
+    searchCategory && searchCategory !== "general"
+      ? ` ${theme.fg("dim", `(${searchCategory})`)}`
+      : "";
+
+  return `${theme.fg("toolTitle", toolName)} ${query}${category}`;
 }
 
 function isImageResult(result: AgentToolResult<ExtractToolDetails>): boolean {

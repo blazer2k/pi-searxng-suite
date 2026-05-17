@@ -16,6 +16,8 @@ import {
 } from "../ui/tool-rendering";
 
 export function registerSearchTool(pi: ExtensionAPI) {
+  const config = getConfig();
+
   pi.registerTool({
     name: "web_search",
     label: "Web Search",
@@ -29,6 +31,27 @@ export function registerSearchTool(pi: ExtensionAPI) {
         maxLength: 500,
         description: "Search query",
       }),
+      ...(config.llmCanOverrideLimit
+        ? {
+            limit: Type.Optional(
+              Type.Number({
+                minimum: 1,
+                maximum: config.limit,
+                description: `Number of results to return (max ${config.limit})`,
+              }),
+            ),
+          }
+        : {}),
+      ...(config.llmCanPickCategory
+        ? {
+            category: Type.Optional(
+              Type.String({
+                description:
+                  "Search category (pick one): general, images, videos, news, it, science, files, social media",
+              }),
+            ),
+          }
+        : {}),
     }),
 
     async execute(
@@ -53,7 +76,13 @@ export function registerSearchTool(pi: ExtensionAPI) {
         }
 
         const searchResponse = await webSearch(query, {
-          limit: config.limit,
+          limit:
+            config.llmCanOverrideLimit && params.limit
+              ? Math.min(params.limit as number, config.limit)
+              : config.limit,
+          category: config.llmCanPickCategory
+            ? (params.category as string)
+            : undefined,
           timeoutMs: config.timeoutMs,
           safesearch: config.safesearch,
           signal,
@@ -109,7 +138,12 @@ export function registerSearchTool(pi: ExtensionAPI) {
       }
     },
     renderCall(args, theme, context_) {
-      const text = buildToolCallText("search", args.query, theme);
+      const text = buildToolCallText(
+        "search",
+        args.query,
+        theme,
+        args.category as string,
+      );
       return new Text(text, 0, 0);
     },
     renderResult(result, options, theme) {

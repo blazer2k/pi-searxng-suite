@@ -11,6 +11,13 @@ export function getSettingsList(config: Config): SettingItem[] {
       values: ["1", "5", "10", "15", "20"],
     },
     {
+      id: "llmCanOverrideLimit",
+      label: "LLM can override limit",
+      description: "Allow the LLM to request fewer results per search",
+      currentValue: String(config.llmCanOverrideLimit),
+      values: ["false", "true"],
+    },
+    {
       id: "timeoutMs",
       label: "Timeout",
       description: "Request timeout in milliseconds",
@@ -24,6 +31,13 @@ export function getSettingsList(config: Config): SettingItem[] {
         "Filter explicit content (0 = off, 1 = moderate, 2 = strict)",
       currentValue: String(config.safesearch),
       values: ["0", "1", "2"],
+    },
+    {
+      id: "llmCanPickCategory",
+      label: "LLM can pick category",
+      description: "Allow the LLM to choose search category",
+      currentValue: String(config.llmCanPickCategory),
+      values: ["false", "true"],
     },
     {
       id: "allowPrivateUrls",

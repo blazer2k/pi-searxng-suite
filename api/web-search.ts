@@ -7,8 +7,22 @@ export interface SearchOptions {
   limit: number;
   timeoutMs: number;
   safesearch: 0 | 1 | 2;
+  category?: string;
   signal?: AbortSignal;
 }
+
+const VALID_CATEGORIES = new Set([
+  "general",
+  "images",
+  "videos",
+  "news",
+  "map",
+  "music",
+  "it",
+  "science",
+  "files",
+  "social media",
+]);
 
 export interface SearchResult {
   title: string;
@@ -65,6 +79,14 @@ export async function webSearch(
   url.searchParams.set("q", query);
   url.searchParams.set("format", "json");
   url.searchParams.set("safesearch", options.safesearch.toString());
+
+  if (options.category) {
+    if (!VALID_CATEGORIES.has(options.category)) {
+      throw new Error(`Invalid search category: ${options.category}`);
+    }
+
+    url.searchParams.set("categories", options.category);
+  }
 
   const headers: Record<string, string> = {
     Accept: "application/json",
