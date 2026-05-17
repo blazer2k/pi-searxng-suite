@@ -35,11 +35,19 @@ export interface SearchResponse {
   results: SearchResult[];
 }
 
+// SearxNG returns null for fields like content, publishedDate, and
+// source in image search results.
+//
+// TypeBox's Optional(String) rejects null,
+// causing "Invalid SearxNG response shape" errors.
+//
+// Changed to Union([String, Null]) to match actual API behavior.
+//
 const SearchResultSchema = Type.Object({
-  title: Type.Optional(Type.String()),
-  url: Type.Optional(Type.String()),
-  content: Type.Optional(Type.String()),
-  engine: Type.Optional(Type.String()),
+  title: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+  url: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+  content: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+  engine: Type.Optional(Type.Union([Type.String(), Type.Null()])),
 });
 
 const SearchResponseSchema = Type.Object({
